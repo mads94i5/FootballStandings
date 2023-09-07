@@ -1,0 +1,9 @@
+in soccer, would Math.Abs be used or are a negative goals difference commonly used?
+
+ChatGPT
+In soccer, a negative goal difference is commonly used to indicate that a team has conceded more goals than they have scored. However, if you want to represent the goal difference as an absolute value (i.e., always positive), you can use Math.Abs to ensure that it's positive:
+
+csharp
+Copy code
+public int GoalsDifference => Math.Abs(GoalsFor - GoalsAgainst);
+This will calculate the absolute goal difference, which is suitable if you don't want to distinguish between a positive or negative goal difference.

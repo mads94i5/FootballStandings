@@ -1,0 +1,9 @@
+in danish soccer, how many points are teams given for W / L / D respectively?
+
+ChatGPT
+In Danish soccer, teams are typically awarded points for wins, draws, and losses as follows:
+
+Win (W): A team is awarded 3 points for a win in a match.
+Draw (D): Each team is awarded 1 point in the case of a draw (when the match ends with the same score for both teams).
+Loss (L): A team does not receive any points for a loss.
+This points system is commonly used in soccer leagues around the world and is also used in Danish soccer competitions to determine team standings and rankings.
