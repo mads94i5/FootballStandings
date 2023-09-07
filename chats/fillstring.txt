@@ -1,0 +1,90 @@
+for (int i = 0; i < league.Teams.Count; i++)
+		{
+			Team team = league.Teams[i];
+			if (league.PositionsToUpperLeague != 0 && i + 1 >= league.PositionsToUpperLeague)
+			{
+				standings.Add($"| {FillString(team.Position.ToString(), 2, true)} | " +
+                    $"\x1b[32m{FillString(team.SpecialRanking != "" ? team.ClubName + $"\x1b[0m (" + team.SpecialRanking + ")" : team.ClubName + $"\x1b[0m", 17, true)} | " +
+                    $"{FillString(team.GamesPlayed.ToString(), 3, true)} | {FillString(team.GamesWon.ToString(), 3, true)} | {FillString(team.GamesDrawn.ToString(), 3, true)} | " +
+                    $"{FillString(team.GamesLost.ToString(), 3, true)} | {FillString(team.GoalsFor.ToString(), 2, true)}-{FillString(team.GoalsAgainst.ToString(), 2, false)} | " +
+                    $"{FillString(team.GoalsDifference.ToString(), 3, true)} | {FillString(team.PointsAchieved.ToString(), 5, true)} | {FillString(team.WinStreak, 3, true)} |");
+				standings.Add($"{fullLine}");
+			}
+			else if (i + 1 > league.Teams.Count - league.PositionsToLowerLeague)
+            {
+				standings.Add($"| {FillString(team.Position.ToString(), 2, true)} | " +
+					$"\x1b[31m{FillString(team.SpecialRanking != "" ? team.ClubName + $"\x1b[0m (" + team.SpecialRanking + ")" : team.ClubName + $"\x1b[0m", 17, true)} | " +
+					$"{FillString(team.GamesPlayed.ToString(), 3, true)} | {FillString(team.GamesWon.ToString(), 3, true)} | {FillString(team.GamesDrawn.ToString(), 3, true)} | " +
+					$"{FillString(team.GamesLost.ToString(), 3, true)} | {FillString(team.GoalsFor.ToString(), 2, true)}-{FillString(team.GoalsAgainst.ToString(), 2, false)} | " +
+					$"{FillString(team.GoalsDifference.ToString(), 3, true)} | {FillString(team.PointsAchieved.ToString(), 5, true)} | {FillString(team.WinStreak, 3, true)} |");
+				standings.Add($"{fullLine}");
+			}
+			else
+            {
+				standings.Add($"| {FillString(team.Position.ToString(), 2, true)} | " +
+					$"{FillString(team.SpecialRanking != "" ? team.ClubName + $" (" + team.SpecialRanking + ")" : team.ClubName, 17, true)} | " +
+					$"{FillString(team.GamesPlayed.ToString(), 3, true)} | {FillString(team.GamesWon.ToString(), 3, true)} | {FillString(team.GamesDrawn.ToString(), 3, true)} | " +
+					$"{FillString(team.GamesLost.ToString(), 3, true)} | {FillString(team.GoalsFor.ToString(), 2, true)}-{FillString(team.GoalsAgainst.ToString(), 2, false)} | " +
+					$"{FillString(team.GoalsDifference.ToString(), 3, true)} | {FillString(team.PointsAchieved.ToString(), 5, true)} | {FillString(team.WinStreak, 3, true)} |");
+				standings.Add($"{fullLine}");
+			}
+		}
+
+
+	private static string FillString(string inputStr, int desiredLength, bool leftSide, char fillCharacter = ' ')
+	{
+		if (inputStr.Length >= desiredLength)
+		{
+			return inputStr;
+		}
+
+		int fillCount = desiredLength - inputStr.Length;
+		string filledStr;
+
+		if (leftSide)
+		{
+			filledStr = new string(fillCharacter, fillCount) + inputStr;
+		}
+		else
+		{
+			filledStr = inputStr + new string(fillCharacter, fillCount);
+		}
+		return filledStr;
+	}
+
+why does my FillString method not work where I am using escape codes ?
+
+ChatGPT
+The issue with your FillString method not working correctly when using escape codes is related to the calculation of the string length. When you're using escape codes for text color (e.g., \x1b[32m for green), you're including those escape codes in the string, but they don't actually contribute to the visible length of the string when displayed in the console.
+
+However, your FillString method calculates the length based on the entire string, including the escape codes. This leads to incorrect alignment because the escape codes are treated as regular characters when calculating the length.
+
+To fix this issue, you should modify your FillString method to account for the escape codes when calculating the length. One way to do this is to use a regular expression to remove the escape codes before calculating the length. Here's an updated version of your FillString method that takes escape codes into account:
+
+csharp
+Copy code
+private static string FillString(string inputStr, int desiredLength, bool leftSide, char fillCharacter = ' ')
+{
+    // Remove ANSI escape codes before calculating the length
+    string cleanInputStr = System.Text.RegularExpressions.Regex.Replace(inputStr, @"\x1b\[\d+m", "");
+
+    if (cleanInputStr.Length >= desiredLength)
+    {
+        return inputStr;
+    }
+
+    int fillCount = desiredLength - cleanInputStr.Length;
+    string filledStr;
+
+    if (leftSide)
+    {
+        filledStr = new string(fillCharacter, fillCount) + inputStr;
+    }
+    else
+    {
+        filledStr = inputStr + new string(fillCharacter, fillCount);
+    }
+
+    return filledStr;
+}
+In this version of the FillString method, we first use a regular expression (\x1b\[\d+m) to remove ANSI escape codes from the inputStr before calculating the length. This ensures that the length calculation is based on the visible characters without the escape codes, and your alignment should work correctly when you use escape codes for text color.

@@ -4,7 +4,7 @@
     {
         if (x == null || y == null)
         {
-            throw new ArgumentNullException("Both teams must not be null.");
+            throw new ArgumentNullException("Teams must not be null.");
         }
 
         // Compare by points
@@ -25,5 +25,9 @@
 
         // Compare alphabetically
         return string.Compare(x.ClubName, y.ClubName, StringComparison.Ordinal);
+    }
+    public static bool AreTeamsEqual(Team x, Team y)
+    {
+        return x.PointsAchieved == y.PointsAchieved;
     }
 }

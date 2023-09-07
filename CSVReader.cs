@@ -1,12 +1,10 @@
-﻿using System;
-using System.Text.RegularExpressions;
-public static class CSVReader
+﻿public static class CSVReader
 {
-    public static League ReadLeague()
+    public static League ReadLeague(string testData)
     {
-        string csvFileName = "setup.csv";
+        string csvFileName = $"test/{testData}/setup/setup.csv";
         string workingDirectory = Environment.CurrentDirectory;
-        string currentDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
+        string currentDirectory = Directory.GetParent(workingDirectory)!.Parent!.Parent!.FullName;
         string csvFilePath = Path.Combine(currentDirectory, csvFileName);
 
         try
@@ -63,12 +61,12 @@ public static class CSVReader
             }
         }
     }
-    public static void ReadTeams(League league)
+    public static void ReadTeams(string testData, League league)
     {
 
-        string csvFileName = "teams.csv";
+        string csvFileName = $"test/{testData}/setup/teams.csv";
         string workingDirectory = Environment.CurrentDirectory;
-        string currentDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
+        string currentDirectory = Directory.GetParent(workingDirectory)!.Parent!.Parent!.FullName;
         string csvFilePath = Path.Combine(currentDirectory, csvFileName);
 
         try
@@ -122,12 +120,12 @@ public static class CSVReader
             }
         }
     }
-    public static void ReadRound(League league, int round)
+    public static void ReadRound(string testData, League league, int round)
     {
 
-        string csvFileName = $"round-{round}.csv";
+        string csvFileName = $"test/{testData}/rounds/round-{round}.csv";
         string workingDirectory = Environment.CurrentDirectory;
-        string currentDirectory = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
+        string currentDirectory = Directory.GetParent(workingDirectory)!.Parent!.Parent!.FullName;
         string csvFilePath = Path.Combine(currentDirectory, csvFileName);
 
         try
@@ -174,21 +172,17 @@ public static class CSVReader
             string matchScore = data[2].Trim();
             int homeTeamIndex = -1;
             int awayTeamIndex = -1;
-            bool homeTeamFound = false;
-            bool awayTeamFound = false;
             for (int i = 0; i < league.Teams.Count; i++)
             {
                 if (league.Teams[i].Abbreviation == homeTeam)
                 {
                     homeTeamIndex = i;
-                    homeTeamFound = true;
                 }
                 else if (league.Teams[i].Abbreviation == awayTeam)
                 {
                     awayTeamIndex = i;
-                    awayTeamFound = true;
                 }
-                if (homeTeamFound && awayTeamFound)
+                if (homeTeamIndex != -1 && awayTeamIndex != -1)
                 {
                     break;
                 }
@@ -199,8 +193,10 @@ public static class CSVReader
 
             if (homeTeamIndex != -1 && awayTeamIndex != -1)
             {
+                league.Teams[homeTeamIndex].GamesPlayed++;
                 league.Teams[homeTeamIndex].GoalsFor += homeScore;
                 league.Teams[homeTeamIndex].GoalsAgainst += awayScore;
+                league.Teams[awayTeamIndex].GamesPlayed++;
                 league.Teams[awayTeamIndex].GoalsFor += awayScore;
                 league.Teams[awayTeamIndex].GoalsAgainst += homeScore;
                 if (homeScore > awayScore)
