@@ -7,7 +7,7 @@ This markdown document provides a comprehensive guide to understanding, using, a
 ### Usage
 To effectively utilize this solution, follow these guidelines:\
 Run the application with your preferred IDE.\
-Find the logs of the standings in the respective folders inside the test folder.
+Find the logs of the standings inside the respective folders in the test directory.
 
 ### Installation: 
 Clone the repository.
