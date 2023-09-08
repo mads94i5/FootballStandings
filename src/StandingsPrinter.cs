@@ -19,7 +19,14 @@
 
 		foreach (string line in standings)
 		{
-			File.AppendAllText(filePath, System.Text.RegularExpressions.Regex.Replace(line, @"\x1b\[\d+m", "") + $"\n");
+			try
+			{
+				File.AppendAllText(filePath, System.Text.RegularExpressions.Regex.Replace(line, @"\x1b\[\d+m", "") + $"\n");
+			}
+			catch (UnauthorizedAccessException ex)
+			{
+				Console.WriteLine("Error: Unauthorized access to the file.", ex);
+			}
 		}
 	}
 	public static void DeleteStandings(string testData)
@@ -30,7 +37,14 @@
 		string filePath = Path.Combine(currentDirectory, fileName);
 		if (File.Exists(filePath))
         {
-			File.Delete(filePath);
+			try
+			{
+				File.Delete(filePath);
+			}
+			catch (UnauthorizedAccessException ex)
+            {
+				Console.WriteLine("Error: Unauthorized access to deleting the file.", ex);
+            }
         }
     }
 
