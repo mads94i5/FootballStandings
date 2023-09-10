@@ -13,6 +13,7 @@
 	public int GoalsDifference { get { return GoalsFor - GoalsAgainst; } }
 	public int PointsAchieved { get; set; }
 	public string WinStreak { get; set; } = "-";
+	public string Fraction { get; set; } = "-";
 
     public Team(string abbreviation, string clubName, string specialRanking)
     {

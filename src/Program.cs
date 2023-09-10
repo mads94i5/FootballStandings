@@ -8,7 +8,13 @@
 
     private void Run()
     {
-        string testData1 = "superligaen";
-        ProcessLeague.ProcessTestData(testData1);
+        LeagueProcessor.ProcessLeague("superligaen");
+        LeagueProcessor.ProcessLeague("nordicbetligaen");
+        LeagueProcessor.ProcessLeague("eleventeams");
+        LeagueProcessor.ProcessLeague("extrateam");
+        LeagueProcessor.ProcessLeague("lessrounds");
+        LeagueProcessor.ProcessLeague("extraround");
+        LeagueProcessor.ProcessLeague("firstroundextramatch");
+        LeagueProcessor.ProcessLeague("firstroundmissingmatch");
     }
 }

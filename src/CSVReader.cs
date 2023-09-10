@@ -11,54 +11,54 @@
         {
             if (!File.Exists(csvFilePath))
             {
-                throw new FileNotFoundException("CSV file not found.");
+                throw new FileNotFoundException($"CSV file not found at path: {csvFilePath}");
             }
-        }
-        catch (FileNotFoundException ex)
-        {
-            Console.WriteLine($"Error: {ex.Message}");
-            Console.WriteLine($"File Path: {ex.FileName}");
-        }
 
-        using (var reader = new StreamReader(csvFilePath))
-        {
-            reader.ReadLine();
-
-            string dataLine = reader.ReadLine()!;
-
-            if (dataLine != null)
+            using (var reader = new StreamReader(csvFilePath))
             {
-                string[] data = dataLine.Split(',');
+                reader.ReadLine();
 
-                if (data.Length == 6)
+                string dataLine = reader.ReadLine()!;
+
+                if (dataLine != null)
                 {
-                    string leagueName = data[0].Trim();
-                    int positionsToChampionsLeague = int.Parse(data[1].Trim());
-                    int positionsToEuropeLeague = int.Parse(data[2].Trim());
-                    int positionsToConferenceLeague = int.Parse(data[3].Trim());
-                    int positionsToUpperLeague = int.Parse(data[4].Trim());
-                    int positionsToLowerLeague = int.Parse(data[5].Trim());
+                    string[] data = dataLine.Split(',');
 
-                    League league = new League(
-                        leagueName,
-                        positionsToChampionsLeague,
-                        positionsToEuropeLeague,
-                        positionsToConferenceLeague,
-                        positionsToUpperLeague,
-                        positionsToLowerLeague
-                    );
+                    if (data.Length == 6)
+                    {
+                        string leagueName = data[0].Trim();
+                        int positionsToChampionsLeague = int.Parse(data[1].Trim());
+                        int positionsToEuropeLeague = int.Parse(data[2].Trim());
+                        int positionsToConferenceLeague = int.Parse(data[3].Trim());
+                        int positionsToUpperLeague = int.Parse(data[4].Trim());
+                        int positionsToLowerLeague = int.Parse(data[5].Trim());
 
-                    return league;
+                        League league = new League(
+                            leagueName,
+                            positionsToChampionsLeague,
+                            positionsToEuropeLeague,
+                            positionsToConferenceLeague,
+                            positionsToUpperLeague,
+                            positionsToLowerLeague
+                        );
+
+                        return league;
+                    }
+                    else
+                    {
+                        throw new FormatException("Invalid number of columns in the CSV data.");
+                    }
                 }
                 else
                 {
-                    throw new FormatException("Invalid number of columns in the CSV data.");
+                    throw new Exception("No data found in the CSV file.");
                 }
             }
-            else
-            {
-                throw new Exception("No data found in the CSV file.");
-            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+            return null!;
         }
     }
     public static void ReadTeams(string testData, League league)
@@ -73,52 +73,65 @@
         {
             if (!File.Exists(csvFilePath))
             {
-                throw new FileNotFoundException("CSV file not found.");
+                throw new FileNotFoundException($"CSV file not found at path: {csvFilePath}");
             }
-        }
-        catch (FileNotFoundException ex)
-        {
-            Console.WriteLine($"Error: " + ex.Message);
-            Console.WriteLine($"File Path: " + ex.FileName);
-            return;
-        }
 
-        using (var reader = new StreamReader(csvFilePath))
-        {
-            reader.ReadLine();
-
-            for (int i = 0; i < 12; i++)
+            using (var reader = new StreamReader(csvFilePath))
             {
-                string dataLine = reader.ReadLine()!;
+                reader.ReadLine();
 
-                if (dataLine != null)
+                for (int i = 0; i < 12; i++)
                 {
-                    string[] data = dataLine.Split(',');
+                    string dataLine = reader.ReadLine()!;
 
-                    if (data.Length == 2)
+                    if (dataLine != null)
                     {
-                        string teamAbbreviation = data[0].Trim();
-                        string teamName = data[1].Trim();
+                        string[] data = dataLine.Split(',');
 
-                        Team team = new Team(
-                            teamAbbreviation,
-                            teamName,
-                            ""
-                        );
+                        if (data.Length == 2)
+                        {
+                            string teamAbbreviation = data[0].Trim();
+                            string teamName = data[1].Trim();
 
-                        league.Teams.Add(team);
+                            Team team = new Team(
+                                teamAbbreviation,
+                                teamName,
+                                ""
+                            );
+
+                            league.Teams.Add(team);
+                        }
+                        else if (data.Length == 3)
+                        {
+                            string teamAbbreviation = data[0].Trim();
+                            string teamName = data[1].Trim();
+                            string teamSpecialRanking = data[2].Trim();
+
+                            Team team = new Team(
+                                teamAbbreviation,
+                                teamName,
+                                teamSpecialRanking
+                            );
+
+                            league.Teams.Add(team);
+                        }
+                        else
+                        {
+                            throw new FormatException("Invalid number of columns in the CSV data.");
+                        }
                     }
                     else
                     {
-                        throw new FormatException("Invalid number of columns in the CSV data.");
+                        throw new Exception("No data found in the CSV file.");
                     }
-                }
-                else
-                {
-                    throw new Exception("No data found in the CSV file.");
                 }
             }
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        
     }
     public static void ReadRound(string testData, League league, int round)
     {
@@ -132,35 +145,34 @@
         {
             if (!File.Exists(csvFilePath))
             {
-                throw new FileNotFoundException("CSV file not found.");
+                throw new FileNotFoundException($"CSV file not found at path: {csvFilePath}");
             }
-        }
-        catch (FileNotFoundException ex)
-        {
-            Console.WriteLine($"Error: " + ex.Message);
-            Console.WriteLine($"File Path: " + ex.FileName);
-            return;
-        }
 
-        using (var reader = new StreamReader(csvFilePath))
-        {
-            reader.ReadLine();
-
-            for (int l = 0; l < 6; l++)
+            using (var reader = new StreamReader(csvFilePath))
             {
-                string dataLine = reader.ReadLine()!;
+                reader.ReadLine();
 
-                if (dataLine != null)
+                for (int l = 0; l < 6; l++)
                 {
-                    string[] data = dataLine.Split(',');
+                    string dataLine = reader.ReadLine()!;
 
-                    FillRoundData(league, data);
-                }
-                else
-                {
-                    throw new Exception("No data found in the CSV file.");
+                    if (dataLine != null)
+                    {
+                        string[] data = dataLine.Split(',');
+
+                        FillRoundData(league, data);
+                    }
+                    else
+                    {
+                        throw new Exception("No data found in the CSV file.");
+                    }
                 }
             }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+            return;
         }
     }
     private static void FillRoundData(League league, string[] data)

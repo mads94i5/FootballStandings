@@ -1,6 +1,6 @@
-﻿public static class ProcessLeague
+﻿public static class LeagueProcessor
 {
-    public static void ProcessTestData(string testData)
+    public static void ProcessLeague(string testData)
     {
         League league = CSVReader.ReadLeague(testData);
         CSVReader.ReadTeams(testData, league);
@@ -43,10 +43,29 @@
         for (int i = 1; i <= roundFiles.Length; i++)
         {
             league.Round++;
+            SetFractions(league);
             CSVReader.ReadRound(testData, league, i);
             AdjustPlacements(league);
             StandingsPrinter.PrintStandings(league);
             StandingsPrinter.SaveStandings(testData, league);
+        }
+    }
+
+    private static void SetFractions(League league)
+    {
+        if (league.Round == 23)
+        {
+            for (int i = 0; i < league.Teams.Count; i++)
+            {
+                if (i < league.Teams.Count / 2)
+                {
+                    league.Teams[i].Fraction = "Upper";
+                }
+                else
+                {
+                    league.Teams[i].Fraction = "Lower";
+                }
+            }
         }
     }
 }

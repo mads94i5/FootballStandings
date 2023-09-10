@@ -14,4 +14,6 @@ Clone the repository.
 
 ### Rule/Error Help
 The application runs and prints standings after each round of a league.\
-No known errors.
+
+Depending on your OS setup, you may run into a file permission error when re-running the application.\ 
+Simply delete the .txt files inside the test subfolders manually and re-run the application.
