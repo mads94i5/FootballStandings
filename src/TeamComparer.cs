@@ -6,6 +6,8 @@
         {
             throw new ArgumentNullException("Teams must not be null.");
         }
+        if (x.Fraction != y.Fraction)
+            return y.Fraction.CompareTo(x.Fraction);
 
         // Compare by points
         if (x.PointsAchieved != y.PointsAchieved)

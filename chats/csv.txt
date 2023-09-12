@@ -1,6 +1,11 @@
 Jeg bad ChatGPT om at generere .csv filerne for Superligaen for mig, glemte at gemme samtalen.
 
-- Til gengæld har jeg loggen fra NordicBetLigaen:
+Dog endte alt dette data fra ChatGPT med ikke at virke da jeg tilføjede fejlfinding, og jeg endte med selv at skrive en algoritme til at lave brugbart data.
+ChatGPT kunne blandt andet ikke finde ud af det med begrænsinger på ude/hjemme kampe mod de samme hold. Double round robin er for komplekst for den.
+Når den får for mange betingelser udelukker den bare nogle af dem, selvom den påstår at den overholder dem.
+ChatGPT er ikke altid et brugbart værktøj. Specielt ikke hvis det er komplekst.
+
+- Til gengæld har jeg loggen fra NordicBetLigaen, selvom jeg brugte min algoritme i sidste ende:
 
 I need you to make me some example data for NordicBetLigaen in csv format, according to the following:
 

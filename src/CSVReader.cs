@@ -46,19 +46,20 @@
                     }
                     else
                     {
-                        throw new FormatException("Invalid number of columns in the CSV data.");
+                        throw new FormatException($"Invalid number of columns ({data.Length}) in the CSV data.");
                     }
                 }
                 else
                 {
-                    throw new Exception("No data found in the CSV file.");
+                    throw new Exception($"No data found in the CSV file: {csvFilePath}");
                 }
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error: {ex.Message}");
-            return null!;
+            Console.WriteLine($"Error: {ex.Message} - for: {testData}");
+            Environment.Exit(1);
+            return null;
         }
     }
     public static void ReadTeams(string testData, League league)
@@ -117,19 +118,20 @@
                         }
                         else
                         {
-                            throw new FormatException("Invalid number of columns in the CSV data.");
+                            throw new FormatException($"Invalid number of columns ({data.Length}) in the CSV data.");
                         }
                     }
                     else
                     {
-                        throw new Exception("No data found in the CSV file.");
+                        throw new Exception($"Not enough data found in the CSV file: {csvFilePath}");
                     }
                 }
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
+            Console.WriteLine($"Error: {ex.Message} - for: {testData}");
+            Environment.Exit(2);
         }
         
     }
@@ -152,99 +154,112 @@
             {
                 reader.ReadLine();
 
-                for (int l = 0; l < 6; l++)
+                while (true)
                 {
                     string dataLine = reader.ReadLine()!;
 
                     if (dataLine != null)
                     {
                         string[] data = dataLine.Split(',');
-
                         FillRoundData(league, data);
                     }
                     else
                     {
-                        throw new Exception("No data found in the CSV file.");
+                        break;
                     }
                 }
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error: {ex.Message}");
-            return;
+            Console.WriteLine($"Error: Round: {league.Round} Message: {ex.Message} - for: {testData}"); 
+            Environment.Exit(3);
         }
     }
     private static void FillRoundData(League league, string[] data)
     {
-        if (data.Length == 3)
+        if (data.Length <= 2)
         {
-            string homeTeam = data[0].Trim();
-            string awayTeam = data[1].Trim();
-            string matchScore = data[2].Trim();
-            int homeTeamIndex = -1;
-            int awayTeamIndex = -1;
-            for (int i = 0; i < league.Teams.Count; i++)
+            throw new FormatException("Invalid number of columns in the CSV data.");
+        }
+        string homeTeam = data[0].Trim();
+        string awayTeam = data[1].Trim();
+        string matchScore = data[2].Trim();
+        int homeTeamIndex = -1;
+        int awayTeamIndex = -1;
+        for (int i = 0; i < league.Teams.Count; i++)
+        {
+            if (league.Teams[i].Abbreviation == homeTeam)
             {
-                if (league.Teams[i].Abbreviation == homeTeam)
-                {
-                    homeTeamIndex = i;
-                }
-                else if (league.Teams[i].Abbreviation == awayTeam)
-                {
-                    awayTeamIndex = i;
-                }
-                if (homeTeamIndex != -1 && awayTeamIndex != -1)
-                {
-                    break;
-                }
+                homeTeamIndex = i;
             }
-            string[] scores = matchScore.Split('-');
-            int homeScore = int.Parse(scores[0].Trim());
-            int awayScore = int.Parse(scores[1].Trim());
-
+            if (league.Teams[i].Abbreviation == awayTeam)
+            {
+                awayTeamIndex = i;
+            }
             if (homeTeamIndex != -1 && awayTeamIndex != -1)
             {
-                league.Teams[homeTeamIndex].GamesPlayed++;
-                league.Teams[homeTeamIndex].GoalsFor += homeScore;
-                league.Teams[homeTeamIndex].GoalsAgainst += awayScore;
-                league.Teams[awayTeamIndex].GamesPlayed++;
-                league.Teams[awayTeamIndex].GoalsFor += awayScore;
-                league.Teams[awayTeamIndex].GoalsAgainst += homeScore;
-                if (homeScore > awayScore)
-                {
-                    league.Teams[homeTeamIndex].GamesWon++;
-                    SetTeamStreak(league, homeTeamIndex, "W");
-                    league.Teams[homeTeamIndex].PointsAchieved += 3;
-                    league.Teams[awayTeamIndex].GamesLost++;
-                    SetTeamStreak(league, awayTeamIndex, "L");
-                }
-                else if (homeScore < awayScore)
-                {
-                    league.Teams[homeTeamIndex].GamesLost++;
-                    SetTeamStreak(league, homeTeamIndex, "L");
-                    league.Teams[awayTeamIndex].GamesWon++;
-                    SetTeamStreak(league, awayTeamIndex, "W");
-                    league.Teams[awayTeamIndex].PointsAchieved += 3;
-                }
-                else
-                {
-                    league.Teams[homeTeamIndex].GamesDrawn++;
-                    SetTeamStreak(league, homeTeamIndex, "D");
-                    league.Teams[homeTeamIndex].PointsAchieved++;
-                    league.Teams[awayTeamIndex].GamesDrawn++;
-                    SetTeamStreak(league, awayTeamIndex, "D");
-                    league.Teams[awayTeamIndex].PointsAchieved++;
-                }
+                break;
             }
-            else
-            {
-                throw new Exception("Couldn't find team indexes.");
-            }
+        }
+        string[] scores = matchScore.Split('-');
+        int homeScore = int.Parse(scores[0].Trim());
+        int awayScore = int.Parse(scores[1].Trim());
+
+        if ((homeTeamIndex == -1 || awayTeamIndex == -1))
+        {
+            throw new Exception($"Couldn't find teams.");
+        }
+        if (homeTeamIndex == awayTeamIndex)
+        {
+            throw new Exception("Teams can't play themselves.");
+        }
+        if (league.Round > 22 && league.Teams[homeTeamIndex].Fraction != league.Teams[awayTeamIndex].Fraction)
+        {
+            throw new Exception($"Teams can't play teams from another fraction: " +
+                $"{league.Teams[homeTeamIndex].ClubName}[{league.Teams[homeTeamIndex].Fraction}] vs " +
+                $"{league.Teams[awayTeamIndex].ClubName}[{league.Teams[awayTeamIndex].Fraction}]");
+        }
+        if (league.Teams[homeTeamIndex].GamesAgainstHome.Contains(league.Teams[awayTeamIndex].Abbreviation))
+        {
+            throw new Exception($"Home team: {league.Teams[homeTeamIndex].ClubName} ({league.Teams[homeTeamIndex].Abbreviation}) already played {league.Teams[awayTeamIndex].ClubName} ({league.Teams[awayTeamIndex].Abbreviation}) on home field.");
+        }
+        if (league.Teams[awayTeamIndex].GamesAgainstAway.Contains(league.Teams[homeTeamIndex].Abbreviation))
+        {
+            throw new Exception($"Away team: {league.Teams[awayTeamIndex].ClubName} ({league.Teams[awayTeamIndex].Abbreviation}) already played {league.Teams[homeTeamIndex].ClubName} ({league.Teams[homeTeamIndex].Abbreviation}) on away field.");
+        }
+        league.Teams[homeTeamIndex].GamesPlayed++;
+        league.Teams[homeTeamIndex].GamesAgainstHome.Add(league.Teams[awayTeamIndex].Abbreviation);
+        league.Teams[homeTeamIndex].GoalsFor += homeScore;
+        league.Teams[homeTeamIndex].GoalsAgainst += awayScore;
+        league.Teams[awayTeamIndex].GamesPlayed++;
+        league.Teams[awayTeamIndex].GamesAgainstAway.Add(league.Teams[homeTeamIndex].Abbreviation);
+        league.Teams[awayTeamIndex].GoalsFor += awayScore;
+        league.Teams[awayTeamIndex].GoalsAgainst += homeScore;
+        if (homeScore > awayScore)
+        {
+            league.Teams[homeTeamIndex].GamesWon++;
+            SetTeamStreak(league, homeTeamIndex, "W");
+            league.Teams[homeTeamIndex].PointsAchieved += 3;
+            league.Teams[awayTeamIndex].GamesLost++;
+            SetTeamStreak(league, awayTeamIndex, "L");
+        }
+        else if (homeScore < awayScore)
+        {
+            league.Teams[homeTeamIndex].GamesLost++;
+            SetTeamStreak(league, homeTeamIndex, "L");
+            league.Teams[awayTeamIndex].GamesWon++;
+            SetTeamStreak(league, awayTeamIndex, "W");
+            league.Teams[awayTeamIndex].PointsAchieved += 3;
         }
         else
         {
-            throw new FormatException("Invalid number of columns in the CSV data.");
+            league.Teams[homeTeamIndex].GamesDrawn++;
+            SetTeamStreak(league, homeTeamIndex, "D");
+            league.Teams[homeTeamIndex].PointsAchieved++;
+            league.Teams[awayTeamIndex].GamesDrawn++;
+            SetTeamStreak(league, awayTeamIndex, "D");
+            league.Teams[awayTeamIndex].PointsAchieved++;
         }
     }
     private static void SetTeamStreak(League league, int teamIndex, string lastMatch)

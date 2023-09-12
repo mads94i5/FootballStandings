@@ -5,6 +5,8 @@
 	public string SpecialRanking { get; set; }
 	public string Position { get; set; } = "-";
 	public int GamesPlayed { get; set; }
+	public List<string> GamesAgainstHome { get; set; } = new List<string>();
+	public List<string> GamesAgainstAway { get; set; } = new List<string>();
 	public int GamesWon { get; set; }
 	public int GamesDrawn { get; set; }
 	public int GamesLost { get; set; }

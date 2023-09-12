@@ -11,3 +11,9 @@ https://www.geeksforgeeks.org/how-to-sort-list-in-c-sharp-set-1/
 https://www.geeksforgeeks.org/how-to-read-and-write-a-text-file-in-c-sharp/
 
 https://stackoverflow.com/questions/4842424/list-of-ansi-color-escape-sequences
+
+https://learn.microsoft.com/en-us/dotnet/api/system.environment.exit?view=net-7.0
+
+https://www.printyourbrackets.com/6teamroundrobin.html
+
+https://tournamentscheduler.net/schedule/MTQ5NDEyMjc1NzY

@@ -57,6 +57,8 @@
         {
             for (int i = 0; i < league.Teams.Count; i++)
             {
+                league.Teams[i].GamesAgainstHome.Clear();
+                league.Teams[i].GamesAgainstAway.Clear();
                 if (i < league.Teams.Count / 2)
                 {
                     league.Teams[i].Fraction = "Upper";

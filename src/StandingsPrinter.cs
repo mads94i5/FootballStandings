@@ -44,20 +44,26 @@
 			catch (UnauthorizedAccessException ex)
             {
 				Console.WriteLine("Error: Unauthorized access to deleting the file.", ex);
-            }
-        }
+			}
+		}
     }
 
 	private static List<string> GetStandingsStrings(League league)
 	{
 		List<string> standings = new List<string>();
-		string fullLine = $"------------------------------------------------------------------------------------";
+		string fullLine = $"-------------------------------------------------------------------------------------------";
+		string headers = $"|  # |              Klub              |  K  |  V  |  U  |  T  |  Mål  | Dif | Point | Str |";
 
 		standings.Add($"{fullLine}");
-		standings.Add($"| League: {FillString(league.Name, 72, false)} |");
-		standings.Add($"| Round: {FillString(league.Round.ToString(), 73, false)} |");
+		standings.Add($"| League: {FillString(league.Name, 79, false)} |");
+		standings.Add($"| Round: {FillString(league.Round.ToString(), 80, false)} |");
+		if (league.Round > 22)
+		{
+			standings.Add($"{fullLine}");
+			standings.Add($"| Fraction: {FillString("Upper", 77, false)} |");
+        }
 		standings.Add($"{fullLine}");
-		standings.Add($"|  # |          Klub           |  K  |  V  |  U  |  T  |  Mål  | Dif | Point | Str |");
+		standings.Add($"{headers}");
 		standings.Add($"{fullLine}");
 		for (int i = 0; i < league.Teams.Count; i++)
 		{
@@ -65,7 +71,7 @@
 			if (league.PositionsToUpperLeague != 0 && i + 1 <= league.PositionsToUpperLeague)
 			{
 				standings.Add($"| {(league.Round > 22 ? team.Fraction == "Upper" ? $"\x1b[33m{FillString(team.Position.ToString(), 2, true)}\x1b[0m" : $"\x1b[34m{FillString(team.Position.ToString(), 2, true)}\x1b[0m" : FillString(team.Position.ToString(), 2, true))} | " +
-                    $"\x1b[32m{FillString(team.SpecialRanking != "" ? team.ClubName + $"\x1b[0m (" + team.SpecialRanking + ")" : team.ClubName + $"\x1b[0m", 23, false)} | " +
+					$"{FillString(team.SpecialRanking != "" ? "(" + team.SpecialRanking + ")" : "", 3, true)}{FillString("\x1b[32m" + team.ClubName + " \x1b[0m(\x1b[32m" + team.Abbreviation + "\x1b[0m)", 27, false)} | " +
                     $"{FillString(team.GamesPlayed.ToString(), 3, true)} | {FillString(team.GamesWon.ToString(), 3, true)} | {FillString(team.GamesDrawn.ToString(), 3, true)} | " +
                     $"{FillString(team.GamesLost.ToString(), 3, true)} | {FillString(team.GoalsFor.ToString(), 2, true)}-{FillString(team.GoalsAgainst.ToString(), 2, false)} | " +
                     $"{FillString(team.GoalsDifference.ToString(), 3, true)} | {FillString(team.PointsAchieved.ToString(), 5, true)} | {FillString(team.WinStreak, 3, true)} |");
@@ -74,7 +80,7 @@
 			else if (i + 1 > league.Teams.Count - league.PositionsToLowerLeague)
 			{
 				standings.Add($"| {(league.Round > 22 ? team.Fraction == "Upper" ? $"\x1b[33m{FillString(team.Position.ToString(), 2, true)}\x1b[0m" : $"\x1b[34m{FillString(team.Position.ToString(), 2, true)}\x1b[0m" : FillString(team.Position.ToString(), 2, true))} | " +
-					$"\x1b[31m{FillString(team.SpecialRanking != "" ? team.ClubName + $"\x1b[0m (" + team.SpecialRanking + ")" : team.ClubName + $"\x1b[0m", 23, false)} | " +
+					$"{FillString(team.SpecialRanking != "" ? "(" + team.SpecialRanking + ")" : "", 3, true)}{FillString("\x1b[31m" + team.ClubName + " \x1b[0m(\x1b[31m" + team.Abbreviation + "\x1b[0m)", 27, false)} | " +
 					$"{FillString(team.GamesPlayed.ToString(), 3, true)} | {FillString(team.GamesWon.ToString(), 3, true)} | {FillString(team.GamesDrawn.ToString(), 3, true)} | " +
 					$"{FillString(team.GamesLost.ToString(), 3, true)} | {FillString(team.GoalsFor.ToString(), 2, true)}-{FillString(team.GoalsAgainst.ToString(), 2, false)} | " +
 					$"{FillString(team.GoalsDifference.ToString(), 3, true)} | {FillString(team.PointsAchieved.ToString(), 5, true)} | {FillString(team.WinStreak, 3, true)} |");
@@ -83,10 +89,17 @@
 			else
 			{
 				standings.Add($"| {(league.Round > 22 ? team.Fraction == "Upper" ? $"\x1b[33m{FillString(team.Position.ToString(), 2, true)}\x1b[0m" : $"\x1b[34m{FillString(team.Position.ToString(), 2, true)}\x1b[0m" : FillString(team.Position.ToString(), 2, true))} | " +
-					$"{FillString(team.SpecialRanking != "" ? team.ClubName + $" (" + team.SpecialRanking + ")" : team.ClubName, 23, false)} | " +
+					$"{FillString(team.SpecialRanking != "" ? "(" + team.SpecialRanking + ")" : "", 3, true)}{FillString(team.ClubName + " (" + team.Abbreviation + ")", 27, false)} | " +
 					$"{FillString(team.GamesPlayed.ToString(), 3, true)} | {FillString(team.GamesWon.ToString(), 3, true)} | {FillString(team.GamesDrawn.ToString(), 3, true)} | " +
 					$"{FillString(team.GamesLost.ToString(), 3, true)} | {FillString(team.GoalsFor.ToString(), 2, true)}-{FillString(team.GoalsAgainst.ToString(), 2, false)} | " +
 					$"{FillString(team.GoalsDifference.ToString(), 3, true)} | {FillString(team.PointsAchieved.ToString(), 5, true)} | {FillString(team.WinStreak, 3, true)} |");
+				standings.Add($"{fullLine}");
+			}
+			if (league.Round > 22 && i + 1 == Math.Ceiling((double)league.Teams.Count / 2))
+			{
+				standings.Add($"| Fraction: {FillString("Lower", 77, false)} |");
+				standings.Add($"{fullLine}");
+				standings.Add($"{headers}");
 				standings.Add($"{fullLine}");
 			}
 		}
