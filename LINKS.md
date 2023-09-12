@@ -17,3 +17,5 @@ https://learn.microsoft.com/en-us/dotnet/api/system.environment.exit?view=net-7.
 https://www.printyourbrackets.com/6teamroundrobin.html
 
 https://tournamentscheduler.net/schedule/MTQ5NDEyMjc1NzY
+
+https://learn.microsoft.com/en-us/office/client-developer/access/desktop-database-reference/using-wildcard-characters-in-string-comparisons
