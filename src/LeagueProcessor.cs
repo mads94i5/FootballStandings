@@ -38,13 +38,22 @@
         string workingDirectory = Environment.CurrentDirectory;
         string currentDirectory = Directory.GetParent(workingDirectory)!.Parent!.Parent!.FullName;
         string filePath = Path.Combine(currentDirectory, subPath);
-        string[] roundFiles = Directory.GetFiles(filePath);
+        string[] roundFiles = Directory.GetFiles(filePath, "round-??.csv");
 
         for (int i = 1; i <= roundFiles.Length; i++)
         {
             league.Round++;
             SetFractions(league);
-            CSVReader.ReadRound(testData, league, i);
+            CSVReader.ReadRound(testData, league, i, -1);
+            for (int r = 1; r < 10; r++)
+            {
+                string csvFileName = $"test/{testData}/rounds/round-{i}-{r}.csv";
+                string csvFilePath = Path.Combine(currentDirectory, csvFileName);
+                if (File.Exists(csvFilePath))
+                {
+                    CSVReader.ReadRound(testData, league, i, r);
+                }
+            }
             AdjustPlacements(league);
             StandingsPrinter.PrintStandings(league);
             StandingsPrinter.SaveStandings(testData, league);

@@ -24,6 +24,7 @@
         LeagueProcessor.ProcessLeague("extrateam");
         LeagueProcessor.ProcessLeague("lessrounds");
         LeagueProcessor.ProcessLeague("firstroundmissingmatch");
+        LeagueProcessor.ProcessLeague("matchreschedule");
 
         // Uncomment to test error cases:
         // LeagueProcessor.ProcessLeague("faceagainstself");

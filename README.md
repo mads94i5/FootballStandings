@@ -15,5 +15,6 @@ Clone the repository.
 ### Rule/Error Help
 The application runs and prints standings after each round of a league.\
 
-Depending on your OS setup, you may run into a file permission error on consecutive runs of the application.\ 
-Simply delete the .txt files inside the test subfolders manually and re-run the application.
+Depending on your OS setup, you may run into a file permission error on consecutive runs of the application.\
+This can for example happen if your anti-virus has a ransomware shield active for the folder or a parent folder.\
+Simply delete the .txt files inside the test subfolders manually and re-run the application or disable the protection from the folder.

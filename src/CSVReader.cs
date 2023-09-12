@@ -135,10 +135,10 @@
         }
         
     }
-    public static void ReadRound(string testData, League league, int round)
+    public static void ReadRound(string testData, League league, int round, int reschedule)
     {
 
-        string csvFileName = $"test/{testData}/rounds/round-{round}.csv";
+        string csvFileName = reschedule != -1 ? $"test/{testData}/rounds/round-{round}-{reschedule}.csv" : $"test/{testData}/rounds/round-{round}.csv";
         string workingDirectory = Environment.CurrentDirectory;
         string currentDirectory = Directory.GetParent(workingDirectory)!.Parent!.Parent!.FullName;
         string csvFilePath = Path.Combine(currentDirectory, csvFileName);
